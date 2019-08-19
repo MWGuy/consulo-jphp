@@ -25,7 +25,7 @@ public class JPPMIconDescriptorUpdater implements IconDescriptorUpdater
 
 			if(vf.getName().equals(JPPMFileTypeFactory.PACKAGE_YAML)
 			|| vf.getName().equals(JPPMFileTypeFactory.PACKAGE_LOCK)) {
-				iconDescriptor.setMainIcon(JPPMFileType.INSTANCE.getIcon());
+				iconDescriptor.setMainIcon(JPPMFileTypeFactory.JPPM_ICON);
 			}
 		}
 	}

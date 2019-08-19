@@ -16,7 +16,6 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import consulo.jphp.extension.JphpMutableModuleExtension;
-import consulo.jphp.jppm.JPPMFileType;
 import consulo.jphp.jppm.JPPMFileTypeFactory;
 import consulo.logging.Logger;
 import consulo.moduleImport.ModuleImportContext;
@@ -62,7 +61,7 @@ public class JPPMModuleImportProvider implements ModuleImportProvider<ModuleImpo
 	@Override
 	public Image getIcon()
 	{
-		return JPPMFileType.INSTANCE.getIcon();
+		return JPPMFileTypeFactory.JPPM_ICON;
 	}
 
 	@Override
