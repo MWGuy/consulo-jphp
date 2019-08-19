@@ -112,8 +112,9 @@ public class JPPMModuleImportProvider implements ModuleImportProvider<ModuleImpo
 
 		try
 		{
+			InputStream in = packageVFile.getInputStream();
 			Yaml yaml = new Yaml();
-			Map<String, Object> packageMap = yaml.load(packageVFile.getInputStream());
+			Map<String, Object> packageMap = yaml.load(in);
 
 			if(packageMap.containsKey("sources"))
 			{
@@ -124,6 +125,8 @@ public class JPPMModuleImportProvider implements ModuleImportProvider<ModuleImpo
 					contentEntry.addFolder(targetVFile.getUrl() + "/" + source, ProductionContentFolderTypeProvider.getInstance());
 				}
 			}
+
+			in.close();
 		}
 		catch(IOException e)
 		{
