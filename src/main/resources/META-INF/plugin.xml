@@ -1,0 +1,20 @@
+<consulo-plugin>
+	<id>consulo.jphp</id>
+	<name>jPHP &amp; JPPM</name>
+	<description>jPHP support with package manager</description>
+	<version>SNAPSHOT</version>
+	<vendor email="yousan4ik@gmail.com">Maxim Tarasov</vendor>
+	<category>Language Extensions</category>
+
+	<depends>consulo.php</depends>
+	<depends>org.jetbrains.plugins.yaml</depends>
+
+	<extensions defaultExtensionNs="com.intellij">
+		<fileTypeFactory implementation="consulo.jphp.jppm.JPPMFileTypeFactory" />
+		<iconDescriptorUpdater implementation="consulo.jphp.jppm.JPPMIconDescriptorUpdater" />
+		<moduleExtensionProvider key="jphp" name="jPHP" icon="/icons/fileTypes/php.png"
+				mutableClass="consulo.jphp.extension.impl.JphpMutableModuleExtensionImpl"
+				immutableClass="consulo.jphp.extension.impl.JphpModuleExtensionImpl" />
+		<moduleImportProvider implementation="consulo.jphp.jppm.importProvider.JPPMModuleImportProvider" />
+	</extensions>
+</consulo-plugin>
