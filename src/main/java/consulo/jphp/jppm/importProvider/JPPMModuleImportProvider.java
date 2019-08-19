@@ -85,35 +85,35 @@ public class JPPMModuleImportProvider implements ModuleImportProvider<ModuleImpo
 							   @Nonnull ModulesProvider modulesProvider,
 							   @Nullable ModifiableArtifactModel modifiableArtifactModel)
 	{
+		ModifiableModuleModel targetModuleModel = modifiableModuleModel == null ? ModuleManager.getInstance(project).getModifiableModel() : modifiableModuleModel;
+		List<Module> modules = new ArrayList<>();
+
+		String fileToImport = moduleImportContext.getFileToImport();
+		File targetDirectory = new File(fileToImport);
+		File packageFile = new File(targetDirectory, JPPMFileTypeFactory.PACKAGE_YAML);
+		VirtualFile targetVFile = LocalFileSystem.getInstance().findFileByIoFile(targetDirectory);
+		VirtualFile packageVFile = LocalFileSystem.getInstance().findFileByIoFile(targetDirectory);
+
+		assert targetVFile != null;
+
+		Module rootModule = targetModuleModel.newModule(targetDirectory.getName(), targetDirectory.getPath());
+		modules.add(rootModule);
+
+		ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(rootModule);
+		ModifiableRootModel modifiableModel = moduleRootManager.getModifiableModel();
+
+		ContentEntry contentEntry = modifiableModel.addContentEntry(targetVFile);
+
+		JphpMutableModuleExtension phpModuleExtension = modifiableModel.getExtensionWithoutCheck(JphpMutableModuleExtension.class);
+		assert phpModuleExtension != null;
+		phpModuleExtension.setEnabled(true);
+
+		modifiableModel.addModuleExtensionSdkEntry(phpModuleExtension);
+
 		try
 		{
-			ModifiableModuleModel targetModuleModel = modifiableModuleModel == null ? ModuleManager.getInstance(project).getModifiableModel() : modifiableModuleModel;
-			List<Module> modules = new ArrayList<>();
-
-			String fileToImport = moduleImportContext.getFileToImport();
-			File targetDirectory = new File(fileToImport);
-			File packageFile = new File(targetDirectory, JPPMFileTypeFactory.PACKAGE_YAML);
-			VirtualFile targetVFile = LocalFileSystem.getInstance().findFileByIoFile(targetDirectory);
-
-			assert targetVFile != null;
-
-			Module rootModule = targetModuleModel.newModule(targetDirectory.getName(), targetDirectory.getPath());
-			modules.add(rootModule);
-
-			ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(rootModule);
-			ModifiableRootModel modifiableModel = moduleRootManager.getModifiableModel();
-
-			ContentEntry contentEntry = modifiableModel.addContentEntry(targetVFile);
-
-			JphpMutableModuleExtension phpModuleExtension = modifiableModel.getExtensionWithoutCheck(JphpMutableModuleExtension.class);
-			assert phpModuleExtension != null;
-			phpModuleExtension.setEnabled(true);
-
-			modifiableModel.addModuleExtensionSdkEntry(phpModuleExtension);
-
-			InputStream in = Files.newInputStream(Paths.get(packageFile.getAbsolutePath()));
 			Yaml yaml = new Yaml();
-			Map<String, Object> packageMap = yaml.load(in);
+			Map<String, Object> packageMap = yaml.load(packageVFile.getInputStream());
 
 			if(packageMap.containsKey("sources"))
 			{
@@ -124,21 +124,19 @@ public class JPPMModuleImportProvider implements ModuleImportProvider<ModuleImpo
 					contentEntry.addFolder(targetVFile.getUrl() + "/" + source, ProductionContentFolderTypeProvider.getInstance());
 				}
 			}
-
-			WriteAction.run(modifiableModel::commit);
-
-			if(modifiableModuleModel == null)
-			{
-				WriteAction.run(targetModuleModel::commit);
-			}
-
-			return modules;
 		}
 		catch(IOException e)
 		{
 			log.error(e);
-
-			return new ArrayList<>();
 		}
+
+		WriteAction.run(modifiableModel::commit);
+
+		if(modifiableModuleModel == null)
+		{
+			WriteAction.run(targetModuleModel::commit);
+		}
+
+		return modules;
 	}
 }
