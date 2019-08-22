@@ -53,6 +53,6 @@ public class JphpMutableModuleExtensionImpl extends JphpModuleExtensionImpl impl
 	@Override
 	public boolean isModified(@Nonnull JphpModuleExtensionImpl extension)
 	{
-		return isModifiedImpl(extension) || !extension.getInheritableLanguageLevel().equals(getInheritableLanguageLevel()) || !extension.getJavaHome().equals(getJavaHome());
+		return isModifiedImpl(extension) || !extension.getInheritableLanguageLevel().equals(getInheritableLanguageLevel()) || !extension.getJavaSdkName().equals(getJavaSdkName());
 	}
 }

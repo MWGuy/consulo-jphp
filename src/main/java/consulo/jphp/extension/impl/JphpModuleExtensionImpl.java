@@ -20,10 +20,10 @@ import javax.annotation.Nonnull;
  */
 public class JphpModuleExtensionImpl extends ModuleExtensionWithSdkImpl<JphpModuleExtensionImpl> implements PhpModuleExtension<JphpModuleExtensionImpl>
 {
-	public static final String JAVA_HOME_PATH = "java-home-path";
+	public static final String JAVA_SDK_NAME = "java-sdk-name";
 
 	protected LanguageLevelModuleInheritableNamedPointerImpl myLanguageLevel;
-	protected String myJavaHome;
+	protected String myJavaSdkName;
 
 	public JphpModuleExtensionImpl(@Nonnull String id, @Nonnull ModuleRootLayer layer)
 	{
@@ -37,7 +37,7 @@ public class JphpModuleExtensionImpl extends ModuleExtensionWithSdkImpl<JphpModu
 	{
 		super.commit(mutableModuleExtension);
 
-		myJavaHome = mutableModuleExtension.getJavaHome();
+		myJavaSdkName = mutableModuleExtension.getJavaSdkName();
 	}
 
 	@Nonnull
@@ -60,14 +60,14 @@ public class JphpModuleExtensionImpl extends ModuleExtensionWithSdkImpl<JphpModu
 		return PhpSdkType.class;
 	}
 
-	public void setJavaHomePath(String javaHomePath)
+	public void setJavaSdkName(String javaSdkName)
 	{
-		myJavaHome = javaHomePath;
+		myJavaSdkName = javaSdkName;
 	}
 
-	public String getJavaHome()
+	public String getJavaSdkName()
 	{
-		return myJavaHome;
+		return myJavaSdkName;
 	}
 
 	@Override
@@ -75,9 +75,9 @@ public class JphpModuleExtensionImpl extends ModuleExtensionWithSdkImpl<JphpModu
 	{
 		super.getStateImpl(element);
 
-		if(myJavaHome != null)
+		if(myJavaSdkName != null)
 		{
-			element.setAttribute(JAVA_HOME_PATH, myJavaHome);
+			element.setAttribute(JAVA_SDK_NAME, myJavaSdkName);
 		}
 	}
 
@@ -87,16 +87,16 @@ public class JphpModuleExtensionImpl extends ModuleExtensionWithSdkImpl<JphpModu
 	{
 		super.loadStateImpl(element);
 
-		if(element.getAttribute(JAVA_HOME_PATH) != null)
+		if(element.getAttribute(JAVA_SDK_NAME) != null)
 		{
-			myJavaHome = element.getAttribute(JAVA_HOME_PATH).getValue();
+			myJavaSdkName = element.getAttribute(JAVA_SDK_NAME).getValue();
 		}
 		else
 		{
 			ProjectSdksModel sdksModel = new ProjectSdksModel();
 			sdksModel.reset();
 
-			myJavaHome = sdksModel.getSdks()[sdksModel.getSdks().length - 1].getHomePath();
+			myJavaSdkName = sdksModel.getSdks()[sdksModel.getSdks().length - 1].getHomePath();
 		}
 	}
 }

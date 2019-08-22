@@ -1,16 +1,14 @@
 package consulo.jphp.jppm.run;
 
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
+import com.intellij.application.options.ModuleListCellRenderer;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.LabeledComponent;
-import com.intellij.openapi.ui.TextBrowseFolderListener;
-import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.openapi.ui.VerticalFlowLayout;
-import consulo.jphp.jppm.JPPMFileTypeFactory;
-import org.jetbrains.yaml.YAMLFileType;
+import com.intellij.openapi.ui.*;
+import consulo.jphp.extension.impl.JphpModuleExtensionImpl;
 
 import javax.swing.*;
-import java.io.File;
 
 /**
  * Created by mwguy
@@ -18,38 +16,40 @@ import java.io.File;
  */
 public class JPPMTaskConfigurationPanel extends JPanel
 {
-	private LabeledComponent<TextFieldWithBrowseButton> myPackageFilePath;
+	private LabeledComponent<ComboBox> myModule;
 	private LabeledComponent<JTextField> myComamndline;
 
 	public JPPMTaskConfigurationPanel(Project project) {
 		super(new VerticalFlowLayout());
 
-		TextFieldWithBrowseButton component = new TextFieldWithBrowseButton();
-		component.addBrowseFolderListener(new TextBrowseFolderListener(
-				FileChooserDescriptorFactory
-						.createSingleLocalFileDescriptor()
-						.withFileFilter(virtualFile ->
-							virtualFile.getName().equals(JPPMFileTypeFactory.PACKAGE_YAML))
-						.withTitle("JPPM Project")
-						.withHideIgnored(true), project));
-		myPackageFilePath = LabeledComponent.create(component, "Package path");
+		myModule = LabeledComponent.create(new ComboBox(), "Module");
 		myComamndline = LabeledComponent.create(new JTextField(), "Comandline");
 
-		add(myPackageFilePath);
+		myModule.getComponent().setRenderer(new ModuleListCellRenderer());
+
+		add(myModule);
 		add(myComamndline);
 	}
 
 	public void reset(JPPMTaskConfiguration configuration)
 	{
-		myPackageFilePath.getComponent().setText(configuration.PACKAGE_PATH);
+		for(Module module : ModuleManager.getInstance(configuration.getProject()).getModules())
+		{
+			JphpModuleExtensionImpl extension = ModuleUtilCore.getExtension(module, JphpModuleExtensionImpl.class);
+			if(extension != null)
+			{
+				myModule.getComponent().addItem(module);
+			}
+		}
+
 		myComamndline.getComponent().setText(configuration.getProgramParameters());
 	}
 
 	public void applyTo(JPPMTaskConfiguration configuration)
 	{
-		File packageFile = new File(
-				configuration.PACKAGE_PATH = myPackageFilePath.getComponent().getText());
-		configuration.setWorkingDirectory(packageFile.getParent());
 		configuration.setProgramParameters(myComamndline.getComponent().getText());
+
+		Module module = (Module) myModule.getComponent().getSelectedItem();
+		configuration.setModule(module);
 	}
 }

@@ -12,16 +12,23 @@ import com.intellij.execution.runners.ProgramRunner;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.projectRoots.JavaSdk;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
+import com.intellij.openapi.util.Conditions;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.container.plugin.PluginManager;
 import consulo.jphp.extension.impl.JphpModuleExtensionImpl;
+import consulo.logging.Logger;
 import consulo.php.module.extension.PhpModuleExtension;
+import consulo.roots.ui.configuration.SdkComboBox;
 import org.jdom.Element;
 
 import javax.annotation.Nonnull;
@@ -35,16 +42,34 @@ import java.util.*;
  */
 public class JPPMTaskConfiguration extends ModuleBasedConfiguration<RunConfigurationModule> implements CommonProgramRunConfigurationParameters, CompileStepBeforeRun.Suppressor
 {
-	public String PACKAGE_PATH;
 	public String JPPM_COMMANDLINE;
 	public String WORKING_DIRECTORY;
 
 	public Map<String, String> ENVS = new HashMap<>();
 	public boolean PASS_PARENT_ENVS = true;
 
+	protected JphpModuleExtensionImpl myExtension;
+
+	public JphpModuleExtensionImpl getExtension()
+	{
+		return myExtension;
+	}
+
+	public void setExtension(JphpModuleExtensionImpl extension)
+	{
+		this.myExtension = extension;
+	}
+
 	public JPPMTaskConfiguration(Project project, ConfigurationFactory factory)
 	{
 		super(new RunConfigurationModule(project), factory);
+	}
+
+	public void setModule(Module module) {
+		super.setModule(module);
+
+		setExtension(ModuleUtil.getExtension(module, JphpModuleExtensionImpl.class));
+		setWorkingDirectory(module.getModuleDirPath());
 	}
 
 	@Override
@@ -77,19 +102,9 @@ public class JPPMTaskConfiguration extends ModuleBasedConfiguration<RunConfigura
 	{
 		super.readExternal(element);
 
-		if(element.getAttribute("package-path") != null)
-		{
-			PACKAGE_PATH = element.getAttribute("package-path").getValue();
-		}
-
 		if(element.getAttribute("jppm-commandline") != null)
 		{
 			JPPM_COMMANDLINE = element.getAttribute("jppm-commandline").getValue();
-		}
-
-		if(element.getAttribute("directory-path") != null)
-		{
-			WORKING_DIRECTORY = element.getAttribute("directory-path").getValue();
 		}
 	}
 
@@ -97,14 +112,6 @@ public class JPPMTaskConfiguration extends ModuleBasedConfiguration<RunConfigura
 	public void writeExternal(Element element)
 	{
 		super.writeExternal(element);
-
-		if(PACKAGE_PATH != null)
-		{
-			element.setAttribute("package-path", PACKAGE_PATH);
-
-			File packageFile = new File(PACKAGE_PATH);
-			element.setAttribute("directory-path", packageFile.getParent());
-		}
 
 		if(JPPM_COMMANDLINE != null)
 		{
@@ -140,7 +147,27 @@ public class JPPMTaskConfiguration extends ModuleBasedConfiguration<RunConfigura
 				}
 
 				Map<String, String> env = conf.getEnvs();
-				// TODO: make custom JDKs
+
+				ProjectSdksModel sdksModel = new ProjectSdksModel();
+				sdksModel.reset();
+
+				if(myExtension == null)
+				{
+					setModule(getConfigurationModule().getModule());
+				}
+
+				if(myExtension.getJavaSdkName() != null)
+				{
+					for(Sdk sdk : sdksModel.getSdks())
+					{
+						if(Objects.equals(sdk.getName(), myExtension.getJavaSdkName()))
+						{
+							env.put("JAVA_HOME", sdk.getHomePath());
+							break;
+						}
+
+					}
+				}
 
 				GeneralCommandLine commandLine = new GeneralCommandLine();
 				commandLine.withExePath(FileUtil.toSystemDependentName(executableFile));

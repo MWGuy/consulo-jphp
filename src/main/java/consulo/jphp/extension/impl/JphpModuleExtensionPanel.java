@@ -28,11 +28,11 @@ public class JphpModuleExtensionPanel extends JPanel
 
 		SdkComboBox box = new SdkComboBox(sdksModel, Conditions.instanceOf(JavaSdk.class), false);
 
-		if(mutableModuleExtension.getJavaHome() != null)
+		if(mutableModuleExtension.getJavaSdkName() != null)
 		{
 			for(Sdk sdk : sdksModel.getSdks())
 			{
-				if(Objects.equals(sdk.getHomePath(), mutableModuleExtension.getJavaHome()))
+				if(Objects.equals(sdk.getName(), mutableModuleExtension.getJavaSdkName()))
 				{
 					box.setSelectedSdk(sdk);
 					break;
@@ -42,7 +42,7 @@ public class JphpModuleExtensionPanel extends JPanel
 		}
 
 		box.addActionListener(e -> {
-			mutableModuleExtension.setJavaHomePath(Objects.requireNonNull(box.getSelectedSdk()).getHomePath());
+			mutableModuleExtension.setJavaSdkName(Objects.requireNonNull(box.getSelectedSdk()).getName());
 		});
 
 		add(LabeledComponent.create(box, "SDK"));
