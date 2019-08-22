@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.ide.IconDescriptor;
 import consulo.ide.IconDescriptorUpdater;
+import consulo.jphp.JPHPIcons;
 import org.jetbrains.yaml.psi.YAMLFile;
 
 import javax.annotation.Nonnull;
@@ -19,13 +20,19 @@ public class JPPMIconDescriptorUpdater implements IconDescriptorUpdater
 	@Override
 	public void updateIcon(@Nonnull IconDescriptor iconDescriptor, @Nonnull PsiElement psiElement, int i)
 	{
-		if(psiElement instanceof YAMLFile) {
+		if(psiElement instanceof YAMLFile)
+		{
 			final VirtualFile vf = ((YAMLFile) psiElement).getVirtualFile();
 			assert vf != null;
 
 			if(vf.getName().equals(JPPMFileTypeFactory.PACKAGE_YAML)
-			|| vf.getName().equals(JPPMFileTypeFactory.PACKAGE_LOCK)) {
-				iconDescriptor.setMainIcon(JPPMFileTypeFactory.JPPM_ICON);
+					|| vf.getName().equals(JPPMFileTypeFactory.PACKAGE_LOCK))
+			{
+				iconDescriptor.setMainIcon(JPHPIcons.LOGO);
+			}
+			else if(vf.getName().equals(JPPMFileTypeFactory.PACKAGE_BUILD))
+			{
+				iconDescriptor.setRightIcon(JPHPIcons.LOGO);
 			}
 		}
 	}

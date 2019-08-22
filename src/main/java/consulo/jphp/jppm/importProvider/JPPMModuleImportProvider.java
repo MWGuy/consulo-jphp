@@ -15,6 +15,7 @@ import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
+import consulo.jphp.JPHPIcons;
 import consulo.jphp.extension.JphpMutableModuleExtension;
 import consulo.jphp.jppm.JPPMFileTypeFactory;
 import consulo.logging.Logger;
@@ -61,7 +62,7 @@ public class JPPMModuleImportProvider implements ModuleImportProvider<ModuleImpo
 	@Override
 	public Image getIcon()
 	{
-		return JPPMFileTypeFactory.JPPM_ICON;
+		return JPHPIcons.LOGO;
 	}
 
 	@Override
@@ -110,9 +111,8 @@ public class JPPMModuleImportProvider implements ModuleImportProvider<ModuleImpo
 
 		modifiableModel.addModuleExtensionSdkEntry(phpModuleExtension);
 
-		try
+		try (InputStream in = packageVFile.getInputStream())
 		{
-			InputStream in = packageVFile.getInputStream();
 			Yaml yaml = new Yaml();
 			Map<String, Object> packageMap = yaml.load(in);
 
@@ -125,8 +125,6 @@ public class JPPMModuleImportProvider implements ModuleImportProvider<ModuleImpo
 					contentEntry.addFolder(targetVFile.getUrl() + "/" + source, ProductionContentFolderTypeProvider.getInstance());
 				}
 			}
-
-			in.close();
 		}
 		catch(IOException e)
 		{

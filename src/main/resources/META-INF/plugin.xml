@@ -12,7 +12,7 @@
 	<extensions defaultExtensionNs="com.intellij">
 		<fileTypeFactory implementation="consulo.jphp.jppm.JPPMFileTypeFactory" />
 		<iconDescriptorUpdater implementation="consulo.jphp.jppm.JPPMIconDescriptorUpdater" />
-		<moduleExtensionProvider key="jphp" name="jPHP" icon="/icons/fileTypes/php.png"
+		<moduleExtensionProvider key="jphp" name="jPHP" icon="/icons/jphp/jphp.png"
 				mutableClass="consulo.jphp.extension.impl.JphpMutableModuleExtensionImpl"
 				immutableClass="consulo.jphp.extension.impl.JphpModuleExtensionImpl" />
 		<moduleImportProvider implementation="consulo.jphp.jppm.importProvider.JPPMModuleImportProvider" />
