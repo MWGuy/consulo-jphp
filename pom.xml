@@ -37,6 +37,7 @@
 					<dependencies>
 						<dependency>com.intellij.xml</dependency>
 						<dependency>consulo.php</dependency>
+						<dependency>consulo.java</dependency>
 						<dependency>consulo.javascript</dependency>
 						<dependency>org.jetbrains.plugins.yaml</dependency>
 					</dependencies>
@@ -68,6 +69,12 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>consulo.php</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>consulo.java</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
