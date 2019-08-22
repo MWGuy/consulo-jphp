@@ -17,5 +17,6 @@
 				mutableClass="consulo.jphp.extension.impl.JphpMutableModuleExtensionImpl"
 				immutableClass="consulo.jphp.extension.impl.JphpModuleExtensionImpl" />
 		<moduleImportProvider implementation="consulo.jphp.jppm.importProvider.JPPMModuleImportProvider" />
+		<configurationType implementation="consulo.jphp.jppm.run.JPPMTaskConfigrationType" />
 	</extensions>
 </consulo-plugin>

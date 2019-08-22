@@ -2,6 +2,7 @@ package consulo.jphp.extension.impl;
 
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
+import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.openapi.util.Conditions;
 import com.intellij.openapi.projectRoots.JavaSdk;
@@ -44,6 +45,6 @@ public class JphpModuleExtensionPanel extends JPanel
 			mutableModuleExtension.setJavaHomePath(Objects.requireNonNull(box.getSelectedSdk()).getHomePath());
 		});
 
-		add(box);
+		add(LabeledComponent.create(box, "SDK"));
 	}
 }
