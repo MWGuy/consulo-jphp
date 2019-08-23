@@ -19,10 +19,10 @@ import javax.annotation.Nonnull;
  * Created by mwguy
  * on 22.08.19.
  */
-public class JPPMTaskConfigrationType extends ConfigurationTypeBase
+public class JPPMTaskConfigurationType extends ConfigurationTypeBase
 {
-	public JPPMTaskConfigrationType() {
-		super("JPPMTaskConfigrationType", "JPPM Task", "", JPHPIcons.LOGO);
+	public JPPMTaskConfigurationType() {
+		super("JPPMTaskConfigurationType", "JPPM Task", "", JPHPIcons.LOGO);
 
 		addFactory(new ConfigurationFactoryEx(this)
 		{

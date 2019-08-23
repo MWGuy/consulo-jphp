@@ -1,7 +1,6 @@
 package consulo.jphp.extension.impl;
 
 import com.intellij.openapi.projectRoots.SdkType;
-import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import consulo.annotations.RequiredReadAction;
 import consulo.module.extension.ModuleInheritableNamedPointer;
 import consulo.module.extension.impl.ModuleExtensionWithSdkImpl;
@@ -87,16 +86,6 @@ public class JphpModuleExtensionImpl extends ModuleExtensionWithSdkImpl<JphpModu
 	{
 		super.loadStateImpl(element);
 
-		if(element.getAttribute(JAVA_SDK_NAME) != null)
-		{
-			myJavaSdkName = element.getAttribute(JAVA_SDK_NAME).getValue();
-		}
-		else
-		{
-			ProjectSdksModel sdksModel = new ProjectSdksModel();
-			sdksModel.reset();
-
-			myJavaSdkName = sdksModel.getSdks()[sdksModel.getSdks().length - 1].getHomePath();
-		}
+		myJavaSdkName = element.getAttributeValue(JAVA_SDK_NAME);
 	}
 }

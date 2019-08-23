@@ -17,18 +17,18 @@ import javax.swing.*;
 public class JPPMTaskConfigurationPanel extends JPanel
 {
 	private LabeledComponent<ComboBox> myModule;
-	private LabeledComponent<JTextField> myComamndline;
+	private LabeledComponent<JTextField> myCommandline;
 
 	public JPPMTaskConfigurationPanel(Project project) {
 		super(new VerticalFlowLayout());
 
 		myModule = LabeledComponent.create(new ComboBox(), "Module");
-		myComamndline = LabeledComponent.create(new JTextField(), "Comandline");
+		myCommandline = LabeledComponent.create(new JTextField(), "Commandline");
 
 		myModule.getComponent().setRenderer(new ModuleListCellRenderer());
 
 		add(myModule);
-		add(myComamndline);
+		add(myCommandline);
 	}
 
 	public void reset(JPPMTaskConfiguration configuration)
@@ -42,12 +42,12 @@ public class JPPMTaskConfigurationPanel extends JPanel
 			}
 		}
 
-		myComamndline.getComponent().setText(configuration.getProgramParameters());
+		myCommandline.getComponent().setText(configuration.getProgramParameters());
 	}
 
 	public void applyTo(JPPMTaskConfiguration configuration)
 	{
-		configuration.setProgramParameters(myComamndline.getComponent().getText());
+		configuration.setProgramParameters(myCommandline.getComponent().getText());
 
 		Module module = (Module) myModule.getComponent().getSelectedItem();
 		configuration.setModule(module);
