@@ -44,28 +44,9 @@ public class JPPMTaskConfiguration extends ModuleBasedConfiguration<RunConfigura
 	public Map<String, String> ENVS = new HashMap<>();
 	public boolean PASS_PARENT_ENVS = true;
 
-	protected JphpModuleExtensionImpl myExtension;
-
-	public JphpModuleExtensionImpl getExtension()
-	{
-		return myExtension;
-	}
-
-	public void setExtension(JphpModuleExtensionImpl extension)
-	{
-		this.myExtension = extension;
-	}
-
 	public JPPMTaskConfiguration(Project project, ConfigurationFactory factory)
 	{
 		super(new RunConfigurationModule(project), factory);
-	}
-
-	public void setModule(Module module) {
-		super.setModule(module);
-
-		setExtension(ModuleUtil.getExtension(module, JphpModuleExtensionImpl.class));
-		setWorkingDirectory(module.getModuleDirPath());
 	}
 
 	@Override
@@ -144,16 +125,13 @@ public class JPPMTaskConfiguration extends ModuleBasedConfiguration<RunConfigura
 
 				Map<String, String> env = conf.getEnvs();
 
-				ProjectSdksModel sdksModel = new ProjectSdksModel();
-				sdksModel.reset();
+				Module module = getConfigurationModule().getModule();
+				JphpModuleExtensionImpl extension = ModuleUtil.getExtension(module, JphpModuleExtensionImpl.class);
 
-				if(myExtension == null)
-				{
-					setModule(getConfigurationModule().getModule());
-				}
+				setWorkingDirectory(module.getModuleDirPath());
 
 				env.put("JAVA_HOME",
-						SdkTable.getInstance().findSdk(myExtension.getJavaSdkName()).getHomePath());
+						SdkTable.getInstance().findSdk(extension.getJavaSdkName()).getHomePath());
 
 				GeneralCommandLine commandLine = new GeneralCommandLine();
 				commandLine.withExePath(FileUtil.toSystemDependentName(executableFile));
