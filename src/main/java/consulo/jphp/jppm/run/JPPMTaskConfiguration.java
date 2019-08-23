@@ -16,19 +16,15 @@ import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.JavaSdk;
-import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.projectRoots.SdkTable;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
-import com.intellij.openapi.util.Conditions;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.container.plugin.PluginManager;
 import consulo.jphp.extension.impl.JphpModuleExtensionImpl;
-import consulo.logging.Logger;
 import consulo.php.module.extension.PhpModuleExtension;
-import consulo.roots.ui.configuration.SdkComboBox;
 import org.jdom.Element;
 
 import javax.annotation.Nonnull;
@@ -156,18 +152,8 @@ public class JPPMTaskConfiguration extends ModuleBasedConfiguration<RunConfigura
 					setModule(getConfigurationModule().getModule());
 				}
 
-				if(myExtension.getJavaSdkName() != null)
-				{
-					for(Sdk sdk : sdksModel.getSdks())
-					{
-						if(Objects.equals(sdk.getName(), myExtension.getJavaSdkName()))
-						{
-							env.put("JAVA_HOME", sdk.getHomePath());
-							break;
-						}
-
-					}
-				}
+				env.put("JAVA_HOME",
+						SdkTable.getInstance().findSdk(myExtension.getJavaSdkName()).getHomePath());
 
 				GeneralCommandLine commandLine = new GeneralCommandLine();
 				commandLine.withExePath(FileUtil.toSystemDependentName(executableFile));
