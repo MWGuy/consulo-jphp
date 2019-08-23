@@ -30,8 +30,6 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -93,7 +91,7 @@ public class JPPMModuleImportProvider implements ModuleImportProvider<ModuleImpo
 		File targetDirectory = new File(fileToImport);
 		File packageFile = new File(targetDirectory, JPPMFileTypeFactory.PACKAGE_YAML);
 		VirtualFile targetVFile = LocalFileSystem.getInstance().findFileByIoFile(targetDirectory);
-		VirtualFile packageVFile = LocalFileSystem.getInstance().findFileByIoFile(targetDirectory);
+		VirtualFile packageVFile = LocalFileSystem.getInstance().findFileByIoFile(packageFile);
 
 		assert targetVFile != null;
 
