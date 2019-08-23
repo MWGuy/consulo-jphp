@@ -126,7 +126,18 @@ public class JPPMTaskConfiguration extends ModuleBasedConfiguration<RunConfigura
 				Map<String, String> env = conf.getEnvs();
 
 				Module module = getConfigurationModule().getModule();
+
+				if(module == null)
+				{
+					throw new ExecutionException("Module not found");
+				}
+
 				JphpModuleExtensionImpl extension = ModuleUtil.getExtension(module, JphpModuleExtensionImpl.class);
+
+				if(extension == null)
+				{
+					throw new ExecutionException("jPHP Extension not found");
+				}
 
 				setWorkingDirectory(module.getModuleDirPath());
 
